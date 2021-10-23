@@ -1,47 +1,51 @@
 import cv2
 import mediapipe as mp
 
-def setupDetector():
-    cap = cv2.VideoCapture(0) #video capture
-    det = mp.solutions.hands.Hands(model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) #detector
+class Detector:
+    def __init__(self):
+        self.video = cv2.VideoCapture(0) #video capture
+        self.detector = mp.solutions.hands.Hands(model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) #detector
 
-    ls_style = mp.solutions.drawing_styles.get_default_hand_landmarks_style() #landmarks style
-    hc_style = mp.solutions.drawing_styles.get_default_hand_connections_style() #connections style
-    styles = {'landmarks': ls_style, 'handcons': hc_style}
+        self.styles = {
+            'landmarks': mp.solutions.drawing_styles.get_default_hand_landmarks_style(),
+            'handcons': mp.solutions.drawing_styles.get_default_hand_connections_style()
+        }
 
-    return cap, det, styles
+        self.image = 0
+        self.results = 0
+        self.breakLoop = False
 
-def detectHands(cap, det, break_key, styles):
-    while True:
-        success, image = cap.read()
+    def readImage(self):
+        success, self.image = self.video.read()
 
-        if not success:
-            print('Ignoring Empty Camera Frame.')
-            continue
-
+    def detectHands(self):
         #make image unwriteable to improve performance, convert to correct colorspace
-        image.flags.writeable = False
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        self.image.flags.writeable = False
+        self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
 
         #apply hand detector to image
-        results = det.process(image)
+        self.results = self.detector.process(self.image)
 
         #make image writeable to draw hands
-        image.flags.writeable = True
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        if results.multi_hand_landmarks:
-            for hand_landmarks in results.multi_hand_landmarks:
-                mp.solutions.drawing_utils.draw_landmarks(image, hand_landmarks, mp.solutions.hands.HAND_CONNECTIONS, styles['landmarks'], styles['handcons'])
-        
-        #show image
-        cv2.imshow('Hand Detector', cv2.flip(image, 1))
+        self.image.flags.writeable = True
+        self.image = cv2.cvtColor(self.image, cv2.COLOR_RGB2BGR)
+        if self.results.multi_hand_landmarks:
+            for hand_landmarks in self.results.multi_hand_landmarks:
+                mp.solutions.drawing_utils.draw_landmarks(self.image, hand_landmarks, mp.solutions.hands.HAND_CONNECTIONS, self.styles['landmarks'], self.styles['handcons'])
 
-        #exit
-        if cv2.waitKey(1) & 0xFF == ord(break_key):
-            break
+    def showImage(self):
+        cv2.imshow('Hand Detector', cv2.flip(self.image, 1))
 
-    cap.release() 
+    def checkBreak(self, break_key):
+        if cv2.waitKey(1) & 0xFF == ord(break_key): self.breakLoop = True
+
+
 
 if __name__ == '__main__':
-    cap, det, styles = setupDetector()
-    detectHands(cap, det, 'q', styles)
+    test = Detector()
+
+    while not test.breakLoop:
+        test.readImage()
+        test.detectHands()
+        test.showImage()
+        test.checkBreak('q')
