@@ -1,4 +1,4 @@
-# **VKeyboard**
+# **V Keyboard**
 
 A virtual keyboard.
 
