@@ -12,10 +12,13 @@ _October 2021 - Present_
 
 * Hand detection using OpenCV and Mediapipe.
 * Singular button with bounding box detection.
+* Keyboard functionality with multiple buttons.
 
 ### **Planned Features**
 
-* Keyboard functionality with multiple buttons.
+* Key presses rather than key holds
+* Different keyboard layout
+* Labelled keys
 
 ## **Skills**
 
