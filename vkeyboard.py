@@ -6,6 +6,8 @@ import string
 
 #TODO add keyboard presses rather than hold
 #TODO add finger counter to check whether 1 or multiple fingers are up
+#TODO add whole keyboard layout
+#TODO consider hardware 
 
 class Detector:
     def __init__(self):
