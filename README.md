@@ -1,6 +1,6 @@
 # **V Keyboard**
 
-:white_check_mark: WORK PLANNED :white_check_mark:
+:negative_squared_cross_mark: TEMPORARILY ON HOLD :negative_squared_cross_mark:
 
 A virtual keyboard.
 
